@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
+
 /**
  * The type Product service impl test.
  */
@@ -62,6 +63,7 @@ public class ProductServiceImplTest {
 
     private ProductArticleDto productArticleDto1;
     private ProductArticleDto productArticleDto2;
+
 
     /**
      * Sets .
@@ -100,15 +102,18 @@ public class ProductServiceImplTest {
 
     }
 
+
     /**
      * Gets products test.
      */
     @Test
+    @DisplayName("Test to check empty input")
     public void getProductsTest() {
         when(productRepository.findAll()).thenReturn(List.of());
         List<Product> products = productService.getProducts();
         assertTrue(products.isEmpty());
     }
+
 
     /**
      * Add product test.
@@ -126,6 +131,7 @@ public class ProductServiceImplTest {
 
     }
 
+
     /**
      * Test process products articles found.
      */
@@ -139,6 +145,7 @@ public class ProductServiceImplTest {
 
         assertDoesNotThrow(() -> productService.addProducts(productDtos));
     }
+
 
     /**
      * Test process products success.
@@ -157,12 +164,13 @@ public class ProductServiceImplTest {
         assertThat(productService.addProducts(productDtos)).isNotEmpty().hasSize(2);
     }
 
+
     /**
-     * Test calculate stock success.
+     * Gets stock test.
      */
     @Test
-    @DisplayName("calculateStock :: Successfully calculate product stock")
-    public void testCalculateStock_Success() {
+    @DisplayName("Calculate product's stock")
+    public void getStockTest() {
         // Given
         given(productArticleRepository.findAll()).willReturn(List.of(productArticle1, productArticle2, productArticle3));
 
@@ -180,12 +188,13 @@ public class ProductServiceImplTest {
                 );
     }
 
+
     /**
-     * Test calculate stock no data.
+     * Gets stock empty test.
      */
     @Test
-    @DisplayName("calculateStock :: No data in database")
-    public void testCalculateStock_NoData() {
+    @DisplayName("Calculate product's stock when empty")
+    public void getStockEmptyTest() {
         // Given
         given(productArticleRepository.findAll()).willReturn(List.of());
 
@@ -198,13 +207,13 @@ public class ProductServiceImplTest {
 
 
     /**
-     * Test update sold product inventory success.
+     * Sell product test.
      *
      * @throws ValidationException the validation exception
      */
     @Test
-    @DisplayName("updateSoldProductInventory :: Successfully update the inventory")
-    public void testUpdateSoldProductInventory_Success() throws ValidationException {
+    @DisplayName("Sell Product and update the inventory and throw no Exception")
+    public void sellProductTest() throws ValidationException {
         // Given
         given(productRepository.findById(product1.getId())).willReturn(Optional.of(product1));
         // When
@@ -213,12 +222,13 @@ public class ProductServiceImplTest {
         assertDoesNotThrow(() -> productService.sellProduct(1L));
     }
 
+
     /**
-     * Test update sold product inventory product not found.
+     * Sell product exception test.
      */
     @Test
-    @DisplayName("updateSoldProductInventory :: Product not found, should throw ValidationException")
-    public void testUpdateSoldProductInventory_ProductNotFound() {
+    @DisplayName("When no product found, should throw ValidationException")
+    public void sellProductExceptionTest() {
         // Given
         given(productRepository.findById(product1.getId())).willReturn(Optional.empty());
 
@@ -226,11 +236,11 @@ public class ProductServiceImplTest {
     }
 
     /**
-     * Test update sold product inventory sufficient articles product not found.
+     * Sell product less article exception test.
      */
     @Test
-    @DisplayName("updateSoldProductInventory :: Sufficient articles not found, should throw ValidationException")
-    public void testUpdateSoldProductInventory_SufficientArticlesProductNotFound() {
+    @DisplayName("When articles not found, should throw ValidationException")
+    public void sellProductLessArticleExceptionTest() {
         // Given
         productArticle3.setQuantity(14L);
         given(productRepository.findById(product2.getId())).willReturn(Optional.of(product2));

@@ -1,14 +1,17 @@
 package com.example.warehouseinventoryservice.service.impl;
 
 import com.example.warehouseinventoryservice.dto.ArticleDto;
+import com.example.warehouseinventoryservice.exception.ValidationException;
 import com.example.warehouseinventoryservice.model.Article;
+
 import com.example.warehouseinventoryservice.repository.ArticleRepository;
 import com.example.warehouseinventoryservice.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * The type Article service.
@@ -35,12 +38,16 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Article> addArticles(List<ArticleDto> articles) {
-
-        return articles.stream().map(this:: addArticle).collect(Collectors.toList());
+    public List<Article> addArticles(List<ArticleDto> articleDtos) throws ValidationException {
+        List<Article> articles = new ArrayList<>();
+        for (ArticleDto articleDto : articleDtos) {
+            Article article = this.addArticle(articleDto);
+            articles.add(article);
+        }
+        return articles;
     }
 
-    private Article addArticle(ArticleDto articleDto) {
+    private Article addArticle(ArticleDto articleDto) throws ValidationException {
 
         Article article = articleRepository.findById(articleDto.getArticleId())
                 .orElse(Article.builder().id(articleDto.getArticleId()).build());

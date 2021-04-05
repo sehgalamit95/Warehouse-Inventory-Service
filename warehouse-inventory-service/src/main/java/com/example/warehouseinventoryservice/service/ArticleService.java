@@ -1,6 +1,7 @@
 package com.example.warehouseinventoryservice.service;
 
 import com.example.warehouseinventoryservice.dto.ArticleDto;
+import com.example.warehouseinventoryservice.exception.ValidationException;
 import com.example.warehouseinventoryservice.model.Article;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public interface ArticleService {
      *
      * @param articles the articles
      * @return the list
+     * @throws ValidationException the validation exception
      */
-    List<Article> addArticles(List<ArticleDto> articles);
+    List<Article> addArticles(List<ArticleDto> articles) throws ValidationException;
 }

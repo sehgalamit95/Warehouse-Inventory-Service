@@ -1,7 +1,10 @@
 package com.example.warehouseinventoryservice.controller;
 
 import com.example.warehouseinventoryservice.model.Article;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import io.swagger.v3.core.util.Json;
 import net.minidev.json.JSONUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,13 +39,15 @@ public class ArticleControllerTest {
 
     private Article article2;
 
-            private String json;
+    private String json;
+    @Autowired
+    ObjectMapper objectMapper;
 
     /**
      * Sets .
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws JsonProcessingException {
         this.articles = new ArrayList<>();
 
         article1 = new Article();
@@ -57,7 +62,8 @@ public class ArticleControllerTest {
 
         articles.add(article1);
         articles.add(article2);
-        json = new Gson().toJson(articles);
+
+        json=objectMapper.writeValueAsString(articles);
 
     }
 

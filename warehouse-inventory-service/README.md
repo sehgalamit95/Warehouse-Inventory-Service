@@ -27,7 +27,7 @@ mvn clean install
 
 * Running the jar from command line (if using maven to build the jar file)
 
-java -jar -Dspring.profiles.active=default .target/widget-service-0.0.1-SNAPSHOT.jar
+java -jar -Dspring.profiles.active=default target/warehouse-inventory-service-0.0.1-SNAPSHOT.jar
 or
 mvn spring-boot:run
 
@@ -44,5 +44,11 @@ mvn spring-boot:run
 
 * Can be accessed on: http://localhost:8080/actuator
 
-#### Postman
-* Sample package included for testing.
+#### H2-Console
+* Can be accessed on: http://localhost:8080/h2-console with below details: 
+  * JDBC URL:  jdbc:h2:mem:testdb
+  * User Name: sa
+  * Password: (no password required)
+
+#### Postman Testing
+* Sample package included for testing: IKEA_Warehouse_Inventory_Service.postman_collection

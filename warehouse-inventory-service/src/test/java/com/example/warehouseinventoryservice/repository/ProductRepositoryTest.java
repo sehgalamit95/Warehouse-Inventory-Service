@@ -21,6 +21,7 @@ public class ProductRepositoryTest {
     /**
      * Find all test.
      */
+
     @Test
     @DisplayName("Test if findAll method returns empty")
     public void findAllTest()

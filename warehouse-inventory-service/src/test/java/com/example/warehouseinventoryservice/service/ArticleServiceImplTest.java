@@ -1,6 +1,7 @@
 package com.example.warehouseinventoryservice.service;
 
 import com.example.warehouseinventoryservice.dto.ArticleDto;
+import com.example.warehouseinventoryservice.exception.ValidationException;
 import com.example.warehouseinventoryservice.model.Article;
 import com.example.warehouseinventoryservice.repository.ArticleRepository;
 import com.example.warehouseinventoryservice.service.impl.ArticleServiceImpl;
@@ -66,7 +67,7 @@ public class ArticleServiceImplTest {
      */
     @Test
     @DisplayName("Test to check storage of Articles")
-    public void addArticlesTest() {
+    public void addArticlesTest() throws ValidationException {
         Article article1 = Article.builder().id(1l).articleName("leg").stock(12L).build();
         Article article2 = Article.builder().id(2l).articleName("screw").stock(16L).build();
         when(articleRepository.findById(articleDto1.getArticleId())).thenReturn(Optional.of(article1));
