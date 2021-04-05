@@ -1,8 +1,8 @@
 package com.example.warehouseinventoryservice.service.impl;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.example.warehouseinventoryservice.dto.ProductArticleDto;
 import com.example.warehouseinventoryservice.dto.ProductDto;
+import com.example.warehouseinventoryservice.exception.ValidationException;
 import com.example.warehouseinventoryservice.model.Article;
 import com.example.warehouseinventoryservice.model.Product;
 import com.example.warehouseinventoryservice.model.ProductArticle;
@@ -14,13 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ValidationException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -54,15 +50,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> addProducts(List<ProductDto> products) {
-        return products.stream().map(this::addProduct).collect(Collectors.toList());
+    public List<Product> addProducts(List<ProductDto> productDtos) throws ValidationException {
+        List<Product> products = new ArrayList<>();
+        for (ProductDto productDto : productDtos) {
+            Product product = this.addProduct(productDto);
+            products.add(product);
+        }
+        return products;
     }
 
     @Override
     @Transactional
-    public Product addProduct(ProductDto productDto) {
-        Product product = productRepository.findById(productDto.getId())
-                .orElse(Product.builder().name(productDto.getName()).build());
+    public Product addProduct(ProductDto productDto) throws ValidationException {
+        Product product =Product.builder().name(productDto.getName()).build();
         List<ProductArticle> productArticles = new ArrayList<>();
         for (ProductArticleDto productArticleDto : productDto.getProductArticles()) {
             Article article = articleRepository.findById(productArticleDto.getArticleId())
@@ -82,9 +82,7 @@ public class ProductServiceImpl implements ProductService {
     public Product sellProduct(Long id) throws ValidationException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ValidationException("Product Out of Stock"));
-        List<ProductArticle> productArticles = productArticleRepository.findAll().stream()
-                .filter(productArticle -> productArticle
-                        .getProduct().getId().equals(product.getId())).collect(Collectors.toList());
+        List<ProductArticle> productArticles = productArticleRepository.findAllByProduct(product);
         for (ProductArticle productArticle : productArticles) {
             Article article = productArticle.getArticle();
             if (article.getStock() - productArticle.getQuantity() < 0)
